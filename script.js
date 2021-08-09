@@ -19,7 +19,7 @@ const operate = (x, z, y) =>
 const keys = [...document.querySelectorAll(".keys")]
 const display = document.querySelector('#display')
 keys.forEach(key => {
-  if (key.innerText === '=') {} else {
+  if (key.innerText === '=' || key.innerText === 'A/C') {} else {
   key.addEventListener('click', updateDisplay)
   }
 })
@@ -30,7 +30,11 @@ function updateDisplay (event) {
     display.innerText += event.target.innerText
   }
  }
-
+function clearAll () {
+  display.innerText = 0;
+}
+let clear = document.querySelector('#clear')
+clear.addEventListener('click', clearAll)
 function defineOperation () {
   let stringToOperate = display.innerText
   let arrayToWork = [...stringToOperate]
