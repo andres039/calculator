@@ -1,7 +1,7 @@
-const add = (x, y) => x + y;
-const subtract = (x, y) => x - y;
-const multiply = (x, y) => x * y;
-const divide = (x, y) => x / y;
+const add = (x, y) => (x + y);
+const subtract = (x, y) => (x - y);
+const multiply = (x, y) => (x * y);
+const divide = (x, y) => (y === 0) ? 'Dividing by 0?...' : (x / y);
 //use the 'display value' as the values for the 'operate' function 
 const operate = (x, z, y) =>
 {   
@@ -32,6 +32,7 @@ function updateDisplay (event) {
  }
 function clearAll () {
   display.innerText = 0;
+  clickCounter = 0;
 }
 let clear = document.querySelector('#clear')
 clear.addEventListener('click', clearAll)
@@ -40,18 +41,38 @@ function defineOperation () {
   let arrayToWork = [...stringToOperate]
   let sign = arrayToWork.filter(x => x === '+' || x === '-' || x === '*' ||x === '/')
   let signIndex = arrayToWork.indexOf(sign[0])
-  let firstNumber = stringToOperate.slice(0, signIndex)
+  let firstNumber = stringToOperate.slice(0, signIndex);
   let secondNumber = stringToOperate.slice(signIndex + 1, stringToOperate.length)
   display.innerText = operate(+firstNumber, sign[0], +secondNumber)
   firstNumber = display.innerText
-}
+  }
 let equal = document.querySelector('#equal')
 equal.addEventListener('click', defineOperation)
 let operator = [...document.querySelectorAll('.operators')]
+operator.forEach(operator => operator.addEventListener('click', operatorClick))
+let clickCounter = 0
+function operatorClick (e) {
+  if (clickCounter === 0) {
+    clickCounter++
+    console.log(clickCounter)
+ } else if (clickCounter === 1) {
+  let stringToOperate = display.innerText.substring(0, display.innerText.length - 1)
+  let arrayToWork = [...stringToOperate]
+  let sign = arrayToWork.filter(x => x === '+' || x === '-' || x === '*' ||x === '/')
+  let signIndex = arrayToWork.indexOf(sign[0])
+  let firstNumber = stringToOperate.slice(0, signIndex)
+  let secondNumber = stringToOperate.slice(signIndex + 1, stringToOperate.length)
+  display.innerText = operate(+firstNumber, sign[0], +secondNumber) + e.target.innerText
+  firstNumber = display.innerText
+ }
+}
 
 
 
 
 
-
-
+/*
+[] get the operators
+[] if they were pressed once already, trigger defineOperation
+-add a counter to veify this
+*/ 
