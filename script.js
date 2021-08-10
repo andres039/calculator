@@ -1,7 +1,7 @@
-const add = (x, y) => (x + y);
-const subtract = (x, y) => (x - y);
-const multiply = (x, y) => (x * y);
-const divide = (x, y) => (y === 0) ? 'Dividing by 0?...' : (x / y);
+const add = (x, y) => (x + y) % 1 != 0 ? (x + y).toFixed(2) : (x + y);
+const subtract = (x, y) => (x - y) % 1 != 0 ? (x - y).toFixed(2) : (x - y);
+const multiply = (x, y) => (x * y) % 1 != 0 ? (x * y).toFixed(2) : (x * y);
+const divide = (x, y) => (y === 0) ? 'Dividing by 0?...' : (x / y) % 1 != 0 ? (x / y).toFixed(2) : (x / y);
 //use the 'display value' as the values for the 'operate' function 
 const operate = (x, z, y) =>
 {   
@@ -16,63 +16,81 @@ const operate = (x, z, y) =>
     return divide(x, y)
   }
 }
+window.addEventListener('keydown', updateDisplayKey)
 const keys = [...document.querySelectorAll(".keys")]
 const display = document.querySelector('#display')
 keys.forEach(key => {
-  if (key.innerText === '=' || key.innerText === 'A/C') {} else {
+  if (key.innerText === '=' || key.innerText === 'A/C' || key.className === 'keys operators') {} else {
   key.addEventListener('click', updateDisplay)
   }
 })
-function updateDisplay (event) {
+function updateDisplay (e) {
+  if (operatorClickCounter === 0) {
   if (display.innerText === '0') {
-  display.innerText = event.target.innerText
+  display.innerText = e.target.innerText 
   } else {
-    display.innerText += event.target.innerText
+    display.innerText += e.target.innerText
   }
  }
+ else {
+  if (display.innerText === firstNumber) {
+  display.innerText = e.target.innerText
+  } else {
+    display.innerText += e.target.innerText;
+  }
+}
+}
+function updateDisplayKey (e) {
+  if (operatorClickCounter === 0) {
+  if (display.innerText === '0') {
+  display.innerText = e.key
+  } else {
+    display.innerText += e.key
+  }
+ }
+ else {
+  if (display.innerText === firstNumber) {
+  display.innerText = e.key
+  } else {
+    display.innerText += e.key
+  }
+}
+}
+ let firstNumber 
+ let secondNumber 
+ let sign
+ let operatorClickCounter = 0
+ function assignFirstNumber (e) {
+   if (operatorClickCounter === 0) {
+   firstNumber = display.innerText
+   sign = e.target.innerText
+  //  .substring(0, firstDigits.length - 1)
+   operatorClickCounter ++
+   console.log(firstNumber, operatorClickCounter);
+   } else {
+   secondNumber = display.innerText
+   let result = operate(+firstNumber, sign, +secondNumber)
+   display.innerText = result
+   firstNumber = display.innerText
+   sign = e.target.innerText
+   }
+ }
+ function assignSecondNumber () {
+   let firstDigits = display.innerText
+   secondNumber = firstDigits
+   let result = operate(+firstNumber, sign, +secondNumber)
+   display.innerText = result
+  }
+  
 function clearAll () {
   display.innerText = 0;
-  clickCounter = 0;
+  operatorClickCounter = 0;
 }
 let clear = document.querySelector('#clear')
 clear.addEventListener('click', clearAll)
-function defineOperation () {
-  let stringToOperate = display.innerText
-  let arrayToWork = [...stringToOperate]
-  let sign = arrayToWork.filter(x => x === '+' || x === '-' || x === '*' ||x === '/')
-  let signIndex = arrayToWork.indexOf(sign[0])
-  let firstNumber = stringToOperate.slice(0, signIndex);
-  let secondNumber = stringToOperate.slice(signIndex + 1, stringToOperate.length)
-  display.innerText = operate(+firstNumber, sign[0], +secondNumber)
-  firstNumber = display.innerText
-  }
+
 let equal = document.querySelector('#equal')
-equal.addEventListener('click', defineOperation)
+equal.addEventListener('click', assignSecondNumber)
 let operator = [...document.querySelectorAll('.operators')]
-operator.forEach(operator => operator.addEventListener('click', operatorClick))
-let clickCounter = 0
-function operatorClick (e) {
-  if (clickCounter === 0) {
-    clickCounter++
-    console.log(clickCounter)
- } else if (clickCounter === 1) {
-  let stringToOperate = display.innerText.substring(0, display.innerText.length - 1)
-  let arrayToWork = [...stringToOperate]
-  let sign = arrayToWork.filter(x => x === '+' || x === '-' || x === '*' ||x === '/')
-  let signIndex = arrayToWork.indexOf(sign[0])
-  let firstNumber = stringToOperate.slice(0, signIndex)
-  let secondNumber = stringToOperate.slice(signIndex + 1, stringToOperate.length)
-  display.innerText = operate(+firstNumber, sign[0], +secondNumber) + e.target.innerText
-  firstNumber = display.innerText
- }
-}
+operator.forEach(operator => operator.addEventListener('click', assignFirstNumber))
 
-
-
-
-
-/*
-[] get the operators
-[] if they were pressed once already, trigger defineOperation
--add a counter to veify this
-*/ 
