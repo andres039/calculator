@@ -16,11 +16,17 @@ const operate = (x, z, y) =>
     return divide(x, y)
   }
 }
-window.addEventListener('keydown', updateDisplayKey)
+const backspace = document.querySelector('#backspace')
+backspace.addEventListener('click', deleteDigit)
+function deleteDigit () {
+    let digits = display.innerText
+    display.innerText = digits.substring(0, digits.length - 1)
+    operatorClickCounter = 0;
+}
 const keys = [...document.querySelectorAll(".keys")]
 const display = document.querySelector('#display')
 keys.forEach(key => {
-  if (key.innerText === '=' || key.innerText === 'A/C' || key.className === 'keys operators') {} else {
+  if (key.innerText === '=' || key.innerText === 'A/C' || key.className === 'keys operators' || key.innerText === 'Backspace') {} else {
   key.addEventListener('click', updateDisplay)
   }
 })
@@ -63,7 +69,7 @@ function updateDisplayKey (e) {
  function assignFirstNumber (e) {
    if (operatorClickCounter === 0) {
    firstNumber = display.innerText
-   sign = e.target.innerText
+   sign = e.target.innerText  
   //  .substring(0, firstDigits.length - 1)
    operatorClickCounter ++
    console.log(firstNumber, operatorClickCounter);
@@ -76,10 +82,14 @@ function updateDisplayKey (e) {
    }
  }
  function assignSecondNumber () {
-   let firstDigits = display.innerText
-   secondNumber = firstDigits
+   if (operatorClickCounter === 0) {
+     display.innerText === display.innerText
+   } else {
+   secondNumber = display.innerText
    let result = operate(+firstNumber, sign, +secondNumber)
    display.innerText = result
+   operatorClickCounter = 0
+   }
   }
   
 function clearAll () {
