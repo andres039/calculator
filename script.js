@@ -31,6 +31,8 @@ keys.forEach(key => {
   }
 })
 function updateDisplay (e) {
+  if (display.innerText.length > 5) {
+    display.innerText = 'long--'} else 
   if (operatorClickCounter === 0) {
   if (display.innerText === '0') {
   display.innerText = e.target.innerText 
@@ -50,7 +52,7 @@ function updateDisplayKey (e) {
   if (operatorClickCounter === 0) {
   if (display.innerText === '0') {
   display.innerText = e.key
-  } else {
+  } else { 
     display.innerText += e.key
   }
  }
@@ -87,7 +89,7 @@ function updateDisplayKey (e) {
    } else {
    secondNumber = display.innerText
    let result = operate(+firstNumber, sign, +secondNumber)
-   display.innerText = result
+   display.innerText = result.toString().length < 6 ? result : 'long'
    operatorClickCounter = 0
    }
   }
